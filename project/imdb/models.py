@@ -58,6 +58,7 @@ class Movie(models.Model):
     director = models.ForeignKey(People, on_delete=models.CASCADE, related_name='director')
     genre = models.CharField(max_length=100, choices=TYPE_OF_LIST, default=OTHER)
     rating = models.FloatField(default=0.0)
+    cast = models.ManyToManyField(People, related_name='cast')
 
 
 class UserMoviesList(models.Model):
