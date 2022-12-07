@@ -6,46 +6,47 @@ from django.contrib.auth.models import AbstractUser
 
 class UserMoviesList(models.Model):
 
-        ACTION = 'Action'
-        ADVENTURE = 'Adventure'
-        ANIMATED = 'Animated'
-        COMEDY = 'Comedy'
-        DRAMA = 'Drama'
-        FANTASY = 'Fantasy'
-        HISTORICAL = 'Historical'
-        HORROR = 'Horror'
-        MUSICAL = 'Musical'
-        ROMANCE = 'Romance'
-        SCIENCE_FICTION = 'Science Fiction'
-        THRILLER = 'Thriller'
-        WESTERN = 'Western'
-        OTHER = 'Other'
+    ACTION = 'Action'
+    ADVENTURE = 'Adventure'
+    ANIMATED = 'Animated'
+    COMEDY = 'Comedy'
+    DRAMA = 'Drama'
+    FANTASY = 'Fantasy'
+    HISTORICAL = 'Historical'
+    HORROR = 'Horror'
+    MUSICAL = 'Musical'
+    ROMANCE = 'Romance'
+    SCIENCE_FICTION = 'Science Fiction'
+    THRILLER = 'Thriller'
+    WESTERN = 'Western'
+    OTHER = 'Other'
 
-        TYPE_OF_LIST = [
-            (ACTION, 'Action'),
-            (ADVENTURE, 'Adventure'),
-            (ANIMATED, 'Animated'),
-            (COMEDY, 'Comedy'),
-            (DRAMA, 'Drama'),
-            (FANTASY, 'Fantasy'),
-            (HISTORICAL, 'Historical'),
-            (HORROR, 'Horror'),
-            (MUSICAL, 'Musical'),
-            (ROMANCE, 'Romance'),
-            (SCIENCE_FICTION, 'Science Fiction'),
-            (THRILLER, 'Thriller'),
-            (WESTERN, 'Western'),
-            (OTHER, 'Other'),
-        ]
+    TYPE_OF_LIST = [
+        (ACTION, 'Action'),
+        (ADVENTURE, 'Adventure'),
+        (ANIMATED, 'Animated'),
+        (COMEDY, 'Comedy'),
+        (DRAMA, 'Drama'),
+        (FANTASY, 'Fantasy'),
+        (HISTORICAL, 'Historical'),
+        (HORROR, 'Horror'),
+        (MUSICAL, 'Musical'),
+        (ROMANCE, 'Romance'),
+        (SCIENCE_FICTION, 'Science Fiction'),
+        (THRILLER, 'Thriller'),
+        (WESTERN, 'Western'),
+        (OTHER, 'Other'),
+    ]
 
-        title = models.CharField(max_length=50)
-        description = models.CharField(max_length=255)
-        type = models.CharField(
-            max_length=15,
-            choices=TYPE_OF_LIST,
-            default=OTHER
+    title = models.CharField(max_length=50)
+    description = models.CharField(max_length=255)
+    type = models.CharField(
+        max_length=15,
+        choices=TYPE_OF_LIST,
+        default=OTHER
     )
-        is_public = models.BooleanField(default=True)
+
+    is_public = models.BooleanField(default=True)
 
 
 #class UserMoviesListItem(models.Model):
