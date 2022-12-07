@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
@@ -47,20 +48,24 @@ class UserMoviesList(models.Model):
         is_public = models.BooleanField(default=True)
 
 
-class User(models.Model):
+#class UserMoviesListItem(models.Model):
+    #movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    #list = models.ForeignKey(UserMoviesList, on_delete=models.CASCADE)
+# TODO: Implement Movie model before implementing UserMoviesListItem as UMLI will have dependency on Movie model
+
+
+class User(AbstractUser):
 
     class Roles(models.IntegerChoices):
         USER = 0
         ADMIN = 1
 
+    #default fields from User are already passed here
     first_name = models.CharField(max_length=33)
     last_name = models.CharField(max_length=40)
     email = models.EmailField()
-    password = models.CharField(max_length=20)
     role = models.IntegerField(choices=Roles.choices, default=Roles.USER)
     film_lists = models.ForeignKey(UserMoviesList, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.first_name + ' ' + self.last_name
-
-
+        return self.username
