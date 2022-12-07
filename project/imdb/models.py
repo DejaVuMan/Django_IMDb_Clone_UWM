@@ -14,6 +14,9 @@ class People(models.Model):
     birth_location = models.CharField(max_length=100)
     bio = models.TextField()
 
+    def __str__(self):
+        return self.name
+
 
 class Movie(models.Model):
     class Meta:
