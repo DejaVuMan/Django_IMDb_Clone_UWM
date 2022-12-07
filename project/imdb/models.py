@@ -6,6 +6,10 @@ from django.contrib.auth.models import AbstractUser
 
 class UserMoviesList(models.Model):
 
+    class Meta:
+        verbose_name = 'User Film List'
+        verbose_name_plural = 'User Film Lists'
+
     ACTION = 'Action'
     ADVENTURE = 'Adventure'
     ANIMATED = 'Animated'
