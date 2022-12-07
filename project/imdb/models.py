@@ -63,6 +63,9 @@ class Movie(models.Model):
     rating = models.FloatField(default=0.0)
     cast = models.ManyToManyField(People, related_name='cast')
 
+    def __str__(self):
+        return f'{self.title} ({self.year})'
+
 
 class UserMoviesList(models.Model):
     class Meta:
@@ -113,6 +116,9 @@ class UserMoviesList(models.Model):
     movies = models.ManyToManyField(Movie, related_name='movies', blank=True)
 
     is_public = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
 
 
 class User(AbstractUser):
