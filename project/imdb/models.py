@@ -114,7 +114,7 @@ class UserMoviesList(models.Model):
     )
 
     movies = models.ManyToManyField(Movie, related_name='movies', blank=True)
-
+    user_created = models.ForeignKey('User', on_delete=models.CASCADE, related_name='user_created')
     is_public = models.BooleanField(default=True)
 
     def __str__(self):
