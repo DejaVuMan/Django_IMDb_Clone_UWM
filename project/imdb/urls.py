@@ -10,5 +10,9 @@ urlpatterns = [
     path('users/<int:pk>/delete', views.user_delete),
     path('users/<int:pk>/movies', views.user_movies_list),
     path('movies', views.movies_list),
+    path('movies/<int:pk>', views.movie_detail),
+    path('movies/create', views.movie_create),
+    path('movies/<int:pk>/update', views.movie_update),
+    path('movies/<int:pk>/delete', views.movie_delete),
     path('movies/<query>', views.movies_search),
 ]
