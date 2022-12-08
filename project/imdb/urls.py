@@ -11,5 +11,4 @@ urlpatterns = [
     path('users/<int:pk>/movies', views.user_movies_list),
     path('movies', views.movies_list),
     path('movies/<query>', views.movies_search),
-    path('lists', views.all_user_movies_list),
 ]
