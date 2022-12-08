@@ -15,4 +15,10 @@ urlpatterns = [
     path('movies/<int:pk>/update', views.movie_update),
     path('movies/<int:pk>/delete', views.movie_delete),
     path('movies/<query>', views.movies_search),
+    path('people', views.people_list),
+    path('people/<int:pk>', views.people_detail),
+    path('people/create', views.people_create),
+    path('people/<int:pk>/update', views.people_update),
+    path('people/<int:pk>/delete', views.people_delete),
+
 ]

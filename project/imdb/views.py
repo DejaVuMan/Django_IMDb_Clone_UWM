@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import User, Movie, UserMoviesList
+from .models import User, Movie, UserMoviesList, People
 from .serializers import UserSerializer, UserMoviesListSerializer, MovieSerializer, PeopleSerializer
 from django.core.exceptions import PermissionDenied
 
@@ -111,3 +111,48 @@ def movie_detail(request, pk):
         movie = Movie.objects.get(pk=pk)
         serializer = MovieSerializer(movie)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def people_list(request):
+    if request.method == 'GET':
+        people = People.objects.all()
+        serializer = PeopleSerializer(people, many=True)
+        return Response(serializer.data)
+
+
+@api_view(['GET'])
+def people_detail(request, pk):
+    if request.method == 'GET':
+        people = People.objects.get(pk=pk)
+        serializer = PeopleSerializer(people)
+        return Response(serializer.data)
+
+
+@api_view(['POST'])
+def people_create(request):
+    if request.method == 'POST':
+        serializer = PeopleSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PUT'])
+def people_update(request, pk):
+    if request.method == 'PUT':
+        people = People.objects.get(pk=pk)
+        serializer = PeopleSerializer(people, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+def people_delete(request, pk):
+    if request.method == 'DELETE':
+        people = People.objects.get(pk=pk)
+        people.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
