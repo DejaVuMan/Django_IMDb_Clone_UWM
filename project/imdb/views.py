@@ -39,20 +39,28 @@ def user_create(request):
 @api_view(['PUT'])
 def user_update(request, pk):
     if request.method == 'PUT':
-        user = User.objects.get(pk=pk)
-        serializer = UserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.pk == pk:
+            user = User.objects.get(pk=pk)
+            serializer = UserSerializer(user, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            raise PermissionDenied
+
 
 @login_required()
 @api_view(['DELETE'])  # TODO: Authorization process
 def user_delete(request, pk):
     if request.method == 'DELETE':
-        user = User.objects.get(pk=pk)
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if request.user.groups.filter(name='Model_Admin').exists() \
+                or request.user.groups.filter(name='Super_Admin').exists():
+            user = User.objects.get(pk=pk)
+            user.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            raise PermissionDenied
 
 
 @api_view(['GET'])
@@ -80,7 +88,8 @@ def user_movies_list_create(request):
 def user_movies_list_update(request, pk, mk):
     if request.method == 'PUT':  # get the thing
         if request.user.pk == pk:  # verify user requesting to modify specific list belonging to user of PK is the same as his own PK
-            user_movies_list = UserMoviesList.objects.get(pk=mk, user_created=pk)  # get UserMoviesList object with id PK and user_created = pk
+            user_movies_list = UserMoviesList.objects.get(pk=mk,
+                                                          user_created=pk)  # get UserMoviesList object with id PK and user_created = pk
             serializer = UserMoviesListSerializer(user_movies_list, data=request.data)
             if serializer.is_valid():
                 serializer.save()
