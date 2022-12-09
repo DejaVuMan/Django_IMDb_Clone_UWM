@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
      'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'postgres',
+        'USER': config("PGSQL_USERNAME"),
         'PASSWORD': config("PGSQL_PASSWORD"),
         'NAME': 'imdb',
         'HOST': 'localhost',
