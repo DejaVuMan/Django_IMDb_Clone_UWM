@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import User, Movie, UserMoviesList, People
 from .serializers import UserSerializer, UserMoviesListSerializer, MovieSerializer, PeopleSerializer
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
 
@@ -32,7 +33,8 @@ def user_create(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['PUT'])  # TODO: Authorization process
+@login_required()
+@api_view(['PUT'])
 def user_update(request, pk):
     if request.method == 'PUT':
         user = User.objects.get(pk=pk)
@@ -42,7 +44,7 @@ def user_update(request, pk):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@login_required()
 @api_view(['DELETE'])  # TODO: Authorization process
 def user_delete(request, pk):
     if request.method == 'DELETE':
@@ -76,6 +78,7 @@ def movies_search(request, query):
         return Response(serializer.data)
 
 
+@login_required()
 @api_view(['POST'])
 def movie_create(request):
     if request.method == 'POST':
@@ -86,6 +89,7 @@ def movie_create(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@login_required()
 @api_view(['PUT'])
 def movie_update(request, pk):
     if request.method == 'PUT':
@@ -97,6 +101,7 @@ def movie_update(request, pk):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@login_required()
 @api_view(['DELETE'])
 def movie_delete(request, pk):
     if request.method == 'DELETE':
@@ -129,6 +134,7 @@ def people_detail(request, pk):
         return Response(serializer.data)
 
 
+@login_required()
 @api_view(['POST'])
 def people_create(request):
     if request.method == 'POST':
@@ -139,6 +145,7 @@ def people_create(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@login_required()
 @api_view(['PUT'])
 def people_update(request, pk):
     if request.method == 'PUT':
@@ -150,6 +157,7 @@ def people_update(request, pk):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@login_required()
 @api_view(['DELETE'])
 def people_delete(request, pk):
     if request.method == 'DELETE':
