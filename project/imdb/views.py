@@ -90,6 +90,23 @@ def user_movies_list_update(request, pk, mk):
             raise PermissionDenied
 
 
+@login_required()
+@api_view(['DELETE'])
+def user_movies_list_delete(request, pk, mk):
+    if request.method == 'DELETE':
+        if request.user.pk == pk:
+            user_movies_list = UserMoviesList.objects.get(pk=mk, user_created=pk)
+            user_movies_list.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        elif request.user.groups.filter(name='Model_Admin').exists() \
+                or request.user.groups.filter(name='Super_Admin').exists():
+            user_movies_list = UserMoviesList.objects.get(pk=mk)
+            user_movies_list.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            raise PermissionDenied
+
+
 @api_view(['GET'])
 def movies_list(request):
     if request.method == 'GET':

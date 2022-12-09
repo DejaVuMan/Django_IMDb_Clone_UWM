@@ -8,9 +8,12 @@ urlpatterns = [
     path('users/create', views.user_create),
     path('users/<int:pk>/update', views.user_update),
     path('users/<int:pk>/delete', views.user_delete),
+
     path('users/<int:pk>/movielist', views.user_movies_list_get),
     path('movielist/create', views.user_movies_list_create),
     path('users/<int:pk>/movielist/<int:mk>/update', views.user_movies_list_update),
+    path('users/<int:pk>/movielist/<int:mk>/delete', views.user_movies_list_delete),
+
     path('movies', views.movies_list),
     path('movies/<int:pk>', views.movie_detail),
     path('movies/create', views.movie_create),
