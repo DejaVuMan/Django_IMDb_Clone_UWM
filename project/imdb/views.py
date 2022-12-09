@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from .models import User, Movie, UserMoviesList, People
 from .serializers import UserSerializer, UserMoviesListSerializer, MovieSerializer, PeopleSerializer
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 
 
@@ -54,12 +56,38 @@ def user_delete(request, pk):
 
 
 @api_view(['GET'])
-def user_movies_list(request, pk):
+def user_movies_list_get(request, pk):
     if request.method == 'GET':
         user = User.objects.get(pk=pk)
         movies = UserMoviesList.objects.filter(user_created=user)
         serializer = UserMoviesListSerializer(movies, many=True)
         return Response(serializer.data)
+
+
+@login_required()
+@api_view(['POST'])
+def user_movies_list_create(request):
+    if request.method == 'POST':
+        serializer = UserMoviesListSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@login_required()
+@api_view(['PUT'])
+def user_movies_list_update(request, pk, mk):
+    if request.method == 'PUT':  # get the thing
+        if request.user.pk == pk:  # verify user requesting to modify specific list belonging to user of PK is the same as his own PK
+            user_movies_list = UserMoviesList.objects.get(pk=mk, user_created=pk)  # get UserMoviesList object with id PK and user_created = pk
+            serializer = UserMoviesListSerializer(user_movies_list, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            raise PermissionDenied
 
 
 @api_view(['GET'])
@@ -82,32 +110,44 @@ def movies_search(request, query):
 @api_view(['POST'])
 def movie_create(request):
     if request.method == 'POST':
-        serializer = MovieSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.groups.filter(name='Model_Admin').exists() \
+                or request.user.groups.filter(name='Super_Admin').exists():
+            serializer = MovieSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            raise PermissionDenied
 
 
 @login_required()
 @api_view(['PUT'])
 def movie_update(request, pk):
     if request.method == 'PUT':
-        movie = Movie.objects.get(pk=pk)
-        serializer = MovieSerializer(movie, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.groups.filter(name='Model_Admin').exists() \
+                or request.user.groups.filter(name='Super_Admin').exists():
+            movie = Movie.objects.get(pk=pk)
+            serializer = MovieSerializer(movie, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            raise PermissionDenied
 
 
 @login_required()
 @api_view(['DELETE'])
 def movie_delete(request, pk):
-    if request.method == 'DELETE':
-        movie = Movie.objects.get(pk=pk)
-        movie.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    if request.user.groups.filter(name='Model_Admin').exists() \
+            or request.user.groups.filter(name='Super_Admin').exists():
+        if request.method == 'DELETE':
+            movie = Movie.objects.get(pk=pk)
+            movie.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+    else:
+        raise PermissionDenied
 
 
 @api_view(['GET'])
@@ -138,29 +178,41 @@ def people_detail(request, pk):
 @api_view(['POST'])
 def people_create(request):
     if request.method == 'POST':
-        serializer = PeopleSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.groups.filter(name='Model_Admin').exists() \
+                or request.user.groups.filter(name='Super_Admin').exists():
+            serializer = PeopleSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            raise PermissionDenied
 
 
 @login_required()
 @api_view(['PUT'])
 def people_update(request, pk):
     if request.method == 'PUT':
-        people = People.objects.get(pk=pk)
-        serializer = PeopleSerializer(people, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.groups.filter(name='Model_Admin').exists() \
+                or request.user.groups.filter(name='Super_Admin').exists():
+            people = People.objects.get(pk=pk)
+            serializer = PeopleSerializer(people, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            raise PermissionDenied
 
 
 @login_required()
 @api_view(['DELETE'])
 def people_delete(request, pk):
     if request.method == 'DELETE':
-        people = People.objects.get(pk=pk)
-        people.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if request.user.groups.filter(name='Model_Admin').exists() \
+                or request.user.groups.filter(name='Super_Admin').exists():
+            people = People.objects.get(pk=pk)
+            people.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            raise PermissionDenied
